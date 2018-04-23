@@ -23,6 +23,7 @@
 #include "qemu/option.h"
 #include "trace.h"
 #include "migration/misc.h"
+#include "block/omg.h"
 
 /* Number of coroutines to reserve per attached device model */
 #define COROUTINE_POOL_RESERVATION 64
@@ -1157,6 +1158,9 @@ int coroutine_fn blk_co_preadv(BlockBackend *blk, int64_t offset,
 
     ret = bdrv_co_preadv(blk->root, offset, bytes, qiov, flags);
     bdrv_dec_in_flight(bs);
+qemu_log("Reading at block-backend.c\n");
+    log_request(blk->root, offset, bytes, qiov, flags);
+
     return ret;
 }
 
