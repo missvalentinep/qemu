@@ -44,16 +44,27 @@ void log_request(BdrvChild *child,
 }
 
 int determine_file(int offset) {
+
     int sector_num = offset / 512;
 
-    for (int i = 0; i < fileCount; i++) {              //TODO: add outer attributes sectors
+    for (int i = 0; i < fileCount; i++) {             
         if (arrayOfFiles[i].startingSector == sector_num ||
             arrayOfFiles[i].endingSector == sector_num) {
             qemu_log("!! Reading file: %s \n",arrayOfFiles[i].fullPath );
             return 0;
         }
     }
-    qemu_log("Error determining file\n ");
+    for (int i = 0; i < fileCount; i++) {
+        if (arrayOfFiles[i].numOfOuterAttributes > 0){
+            for (int k = 0; k < arrayOfFiles[i].numOfOuterAttributes; k++ ){
+                if (arrayOfFiles[i].outerAttributes[k].startingSectorNumber == sector_num){
+                    qemu_log("!!? Reading file: %s \n",arrayOfFiles[i].fullPath );
+                    return 0;
+                }
+            }
+        }
+    }
+        qemu_log("Error determining file\n ");
     return -1;
 }
 
