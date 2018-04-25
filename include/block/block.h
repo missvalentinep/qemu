@@ -53,9 +53,10 @@ typedef enum {
     BDRV_REQ_NO_SERIALISING     = 0x8,
     BDRV_REQ_FUA                = 0x10,
     BDRV_REQ_WRITE_COMPRESSED   = 0x20,
-
+    BDRV_REQ_FROM_MODULE        = 0x30,
     /* Mask of valid flags */
     BDRV_REQ_MASK               = 0x3f,
+
 } BdrvRequestFlags;
 
 typedef struct BlockSizes {
