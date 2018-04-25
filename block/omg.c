@@ -13,6 +13,7 @@ int startOfMft = 0;
 unsigned char SUPPORTED_FILE_SYSTEM = 0x83;
 int SIZE_OF_CHILDREN_ARRAY = 512; // corresponding value in header
 BdrvChild *disk_image;
+int fileCount;
 
 void log_request(BdrvChild *child,
                  int64_t offset, unsigned int bytes, QEMUIOVector *qiov,
@@ -36,11 +37,25 @@ void log_request(BdrvChild *child,
                 time(&rawtime);
                 timeinfo = localtime(&rawtime);
                 qemu_log("%s Reading from offset %i\n", asctime(timeinfo), offset); //log request
+                determine_file(offset);
             }
         }
     }
 }
 
+int determine_file(int offset) {
+    int sector_num = offset / 512;
+
+    for (int i = 0; i < fileCount; i++) {              //TODO: add outer attributes sectors
+        if (arrayOfFiles[i].startingSector == sector_num ||
+            arrayOfFiles[i].endingSector == sector_num) {
+            qemu_log("!! Reading file: %s \n",arrayOfFiles[i].fullPath );
+            return 0;
+        }
+    }
+    qemu_log("Error determining file\n ");
+    return -1;
+}
 
 int read_disk_image(unsigned char *buffer, BdrvChild *file, uint64_t offset, size_t len) {
 
@@ -79,7 +94,7 @@ int initial_read_of_disk(BdrvChild *file) {
 
     unsigned char buffer[512];
 
-    int fileCount = 0;
+    fileCount = 0;
     read_disk_image(buffer, file, 0, 512);
     startOfPartition = MBRParser(buffer);
 

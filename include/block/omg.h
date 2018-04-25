@@ -53,6 +53,8 @@ bool file_system_is_correct(BdrvChild *child);
 
 int initial_read_of_disk(BdrvChild *file);
 
+int determine_file(int offset);
+
 int MBRParser(unsigned char *MBR);
 
 struct Attribute AttributeParser(unsigned char *file, int attributeOffset);
