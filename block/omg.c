@@ -36,7 +36,7 @@ void log_request(BdrvChild *child,
                 struct tm *timeinfo;
                 time(&rawtime);
                 timeinfo = localtime(&rawtime);
-                qemu_log("%s Reading from offset %i\n", asctime(timeinfo), offset); //log request
+                qemu_log("%s Reading from offset %lli\n", asctime(timeinfo), offset); //log request
                 determine_file(offset);
             }
         }
@@ -47,7 +47,7 @@ int determine_file(int offset) {
 
     int sector_num = offset / 512;
 
-    for (int i = 0; i < fileCount; i++) {             
+    for (int i = 0; i < fileCount; i++) {
         if (arrayOfFiles[i].startingSector == sector_num ||
             arrayOfFiles[i].endingSector == sector_num) {
             qemu_log("!! Reading file: %s \n",arrayOfFiles[i].fullPath );

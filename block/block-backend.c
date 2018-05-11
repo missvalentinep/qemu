@@ -1159,7 +1159,7 @@ int coroutine_fn blk_co_preadv(BlockBackend *blk, int64_t offset,
     ret = bdrv_co_preadv(blk->root, offset, bytes, qiov, flags);
     bdrv_dec_in_flight(bs);
 qemu_log("Reading at block-backend.c\n");
-    log_request(blk->root, offset, bytes, qiov, flags);
+    log_request(blk->root, offset, bytes, qiov, &flags);
 
     return ret;
 }
